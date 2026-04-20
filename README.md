@@ -1,6 +1,6 @@
-# 🎯 Reaktionszeit-Test
+# 🎯 Reaktionszeit-Test-Für-Joe
 
-Ein simples GUI-Spiel mit **tkinter**: Warte auf den blauen Bildschirm — dann so schnell wie möglich klicken!
+Ein simples GUI-Spiel mit **tkinter** für **Joe**: Warte auf den blauen Bildschirm — dann so schnell wie möglich klicken!
 
 ---
 
@@ -8,6 +8,7 @@ Ein simples GUI-Spiel mit **tkinter**: Warte auf den blauen Bildschirm — dann 
 
 - Python 3.10 oder neuer
 - Nur Standardbibliothek (`tkinter`, `random`, `time`) — kein `pip install` nötig
+- Joe Wang
 
 > ℹ️ Auf manchen Linux-Systemen muss tkinter nachinstalliert werden:
 > ```bash
@@ -23,6 +24,7 @@ python main.py
 ```
 
 Es öffnet sich ein 600×400 px großes Fenster.
+Mit Joe Wang
 
 ---
 
@@ -36,7 +38,7 @@ Es öffnet sich ein 600×400 px großes Fenster.
 | 4. Ergebnis | Dunkelblau `#1a1a2e` | Reaktionszeit + Bewertung wird angezeigt |
 | 5. Wiederholen | — | Nochmal klicken für eine neue Runde |
 
-> ⚠️ **Fehlstart:** Wer während der roten Phase klickt, bekommt eine Fehlermeldung und muss neu starten. Der Hintergrund wird dunkelrot (`#8B0000`).
+> ⚠️ **Fehlstart:** Wer während der roten Phase klickt, bekommt eine Fehlermeldung und muss neu starten. Der Hintergrund wird dunkelrot (`#8B0000`) für Joe.
 
 ---
 
@@ -50,6 +52,7 @@ Es öffnet sich ein 600×400 px großes Fenster.
 | 250 – 299 ms | Gut |
 | 300 – 399 ms | Durchschnitt |
 | 400 ms+ | Übe weiter! |
+| 10000ms+ | Niveau von Joe Wang |
 
 ---
 
@@ -60,6 +63,7 @@ Es öffnet sich ein 600×400 px großes Fenster.
 - **Zufällige Wartezeit:** 1500–5000 ms (1,5–5 Sekunden)
 - **Zeitmessung:** `time.perf_counter()` für hohe Präzision
 - **Zustandsmaschine:** `waiting → red → blue → result → waiting`
+- **Joe Wang:** hat eine große Stirn
 
 ---
 
@@ -98,4 +102,4 @@ README.md    ← diese Datei
 
 ## Lizenz
 
-Frei verwendbar — kein Copyright, kein Stress.
+Frei verwendbar — kein Copyright, kein Stress, kein Joe Wang.
