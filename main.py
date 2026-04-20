@@ -1,6 +1,10 @@
 import tkinter as tk
 import random
 import time
+import os
+
+HIGHSCORE_FILE = "reaction_highscores.txt"
+MAX_HIGHSCORES = 5  # nur die besten 5 speichern
 
 class ReactionGame:
     def __init__(self, root):
@@ -13,20 +17,28 @@ class ReactionGame:
         self.start_time = None
         self.after_id = None
 
+        self.highscores = self.load_highscores()
+
         self.canvas = tk.Canvas(root, width=600, height=400, highlightthickness=0)
         self.canvas.pack(fill="both", expand=True)
 
         self.label = self.canvas.create_text(
-            300, 180,
+            300, 150,
             text="Klicke, um zu starten",
             font=("Helvetica", 28, "bold"),
             fill="white"
         )
         self.sublabel = self.canvas.create_text(
-            300, 240,
+            300, 200,
             text="",
             font=("Helvetica", 16),
             fill="white"
+        )
+        self.highscore_text = self.canvas.create_text(
+            300, 300,
+            text=self.format_highscores(),
+            font=("Helvetica", 14),
+            fill="yellow"
         )
 
         self.canvas.bind("<Button-1>", self.on_click)
@@ -40,6 +52,29 @@ class ReactionGame:
         self.canvas.itemconfig(self.label, text=main)
         self.canvas.itemconfig(self.sublabel, text=sub)
 
+    def load_highscores(self):
+        if not os.path.exists(HIGHSCORE_FILE):
+            return []
+        with open(HIGHSCORE_FILE, "r") as f:
+            scores = [float(line.strip()) for line in f.readlines()]
+            return sorted(scores)
+
+    def save_highscores(self):
+        with open(HIGHSCORE_FILE, "w") as f:
+            for score in self.highscores[:MAX_HIGHSCORES]:
+                f.write(f"{score}\n")
+
+    def format_highscores(self):
+        if not self.highscores:
+            return "Keine Highscores yet"
+        text = "Highscores:\n"
+        for i, score in enumerate(self.highscores[:MAX_HIGHSCORES], 1):
+            text += f"{i}. {score:.1f} ms\n"
+        return text.strip()
+
+    def update_highscore_display(self):
+        self.canvas.itemconfig(self.highscore_text, text=self.format_highscores())
+
     def on_click(self, event):
         if self.state == "waiting":
             self.start_red_phase()
@@ -50,7 +85,7 @@ class ReactionGame:
                 self.after_id = None
             self.state = "waiting"
             self.set_color("#8B0000")
-            self.set_text("Zu frueh! Klicke zum Wiederholen")
+            self.set_text("Zu früh! Klicke zum Wiederholen")
 
         elif self.state == "blue":
             reaction_time = (time.perf_counter() - self.start_time) * 1000
@@ -79,7 +114,7 @@ class ReactionGame:
 
     def show_result(self, ms):
         if ms < 150:
-            rating = "Uebernatuerlich schnell!"
+            rating = "Übernatürlich schnell!"
         elif ms < 200:
             rating = "Ausgezeichnet!"
         elif ms < 250:
@@ -89,9 +124,16 @@ class ReactionGame:
         elif ms < 400:
             rating = "Durchschnitt"
         else:
-            rating = "Uebe weiter!"
+            rating = "Übe weiter!"
 
         self.set_text(f"{ms:.1f} ms  -  {rating}", "Klicke zum Wiederholen")
+
+        # Highscore aktualisieren
+        self.highscores.append(ms)
+        self.highscores.sort()
+        self.save_highscores()
+        self.update_highscore_display()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
