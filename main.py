@@ -1,79 +1,99 @@
-"""
-Reaktionszeitmesser mit Highscore
-Drücke ENTER wenn das Signal erscheint — so schnell wie möglich!
-"""
-
-import time
+import tkinter as tk
 import random
-import json
-import os
+import time
 
+class ReactionGame:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Reaktionszeit-Test")
+        self.root.geometry("600x400")
+        self.root.resizable(False, False)
 
-HIGHSCORE_FILE = "highscores.json"
-MAX_SCORES = 10
+        self.state = "waiting"
+        self.start_time = None
+        self.after_id = None
 
+        self.canvas = tk.Canvas(root, width=600, height=400, highlightthickness=0)
+        self.canvas.pack(fill="both", expand=True)
 
-def clear_screen() -> None:
-    """Löscht den Bildschirm."""
-    pass
+        self.label = self.canvas.create_text(
+            300, 180,
+            text="Klicke, um zu starten",
+            font=("Helvetica", 28, "bold"),
+            fill="white"
+        )
+        self.sublabel = self.canvas.create_text(
+            300, 240,
+            text="",
+            font=("Helvetica", 16),
+            fill="white"
+        )
 
+        self.canvas.bind("<Button-1>", self.on_click)
+        self.set_color("#444444")
 
-def get_player_name() -> str:
-    """Fragt nach dem Spielernamen."""
-    pass
+    def set_color(self, color):
+        self.canvas.configure(bg=color)
+        self.root.configure(bg=color)
 
+    def set_text(self, main, sub=""):
+        self.canvas.itemconfig(self.label, text=main)
+        self.canvas.itemconfig(self.sublabel, text=sub)
 
-def wait_and_measure() -> float:
-    """
-    Wartet 2-5 Sek., zeigt dann 'JETZT!' und misst wie lange
-    der Spieler braucht um ENTER zu drücken.
+    def on_click(self, event):
+        if self.state == "waiting":
+            self.start_red_phase()
 
-    Returns:
-        Reaktionszeit in ms, oder -1 bei Fehlstart.
-    """
-    pass
+        elif self.state == "red":
+            if self.after_id:
+                self.root.after_cancel(self.after_id)
+                self.after_id = None
+            self.state = "waiting"
+            self.set_color("#8B0000")
+            self.set_text("Zu frueh! Klicke zum Wiederholen")
 
+        elif self.state == "blue":
+            reaction_time = (time.perf_counter() - self.start_time) * 1000
+            self.state = "result"
+            self.set_color("#1a1a2e")
+            self.show_result(reaction_time)
 
-def load_highscores() -> list[dict]:
-    """
-    Lädt Highscores aus JSON-Datei.
+        elif self.state == "result":
+            self.state = "waiting"
+            self.set_color("#444444")
+            self.set_text("Klicke, um erneut zu starten")
 
-    Returns:
-        Liste von {"name": str, "ms": float}
-    """
-    pass
+    def start_red_phase(self):
+        self.state = "red"
+        self.set_color("#c0392b")
+        self.set_text("Warte...", "Nicht klicken - warte auf Blau!")
+        delay = random.randint(1500, 5000)
+        self.after_id = self.root.after(delay, self.go_blue)
 
+    def go_blue(self):
+        self.after_id = None
+        self.state = "blue"
+        self.start_time = time.perf_counter()
+        self.set_color("#1a6eb5")
+        self.set_text("JETZT! Klicke!", "")
 
-def save_highscores(scores: list[dict]) -> None:
-    """Speichert Highscores in JSON-Datei."""
-    pass
+    def show_result(self, ms):
+        if ms < 150:
+            rating = "Uebernatuerlich schnell!"
+        elif ms < 200:
+            rating = "Ausgezeichnet!"
+        elif ms < 250:
+            rating = "Sehr gut!"
+        elif ms < 300:
+            rating = "Gut"
+        elif ms < 400:
+            rating = "Durchschnitt"
+        else:
+            rating = "Uebe weiter!"
 
-
-def add_to_highscores(name: str, ms: float) -> int:
-    """
-    Fügt Ergebnis ein (aufsteigend sortiert, max. 10 Einträge).
-
-    Returns:
-        Platzierung (1-basiert), oder -1 wenn kein Highscore.
-    """
-    pass
-
-
-def show_highscores() -> None:
-    """Gibt die Highscore-Tabelle formatiert aus."""
-    pass
-
-
-def main() -> None:
-    """
-    Haupt-Loop:
-      1. Spieler-Namen eingeben
-      2. Reaktion messen
-      3. Ergebnis & Highscore anzeigen
-      4. Nochmal spielen? (j/n)
-    """
-    pass
-
+        self.set_text(f"{ms:.1f} ms  -  {rating}", "Klicke zum Wiederholen")
 
 if __name__ == "__main__":
-    main()
+    root = tk.Tk()
+    game = ReactionGame(root)
+    root.mainloop()
