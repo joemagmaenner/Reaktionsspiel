@@ -1,6 +1,7 @@
 Aufteilen auf mehrere Dateien (Module)
 - data.py
-  - Daten verwalten, Datei schreiben/lesen
+  - load_scores()
+  - add_score()
 - main.py
   - Spielauswahl
   - Spiel starten
@@ -21,3 +22,9 @@ Aufteilen auf mehrere Dateien (Module)
   - GET /scores
 - client.py
 - test_server_client.py
+- test_data.py
+  - def test_data():
+       add_score(...)
+       scores=get_scores()
+       if (scores...)
+          print ("es hat funktioniert, hurra!")
