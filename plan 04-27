@@ -1,1 +1,23 @@
-bla bla
+Aufteilen auf mehrere Dateien (Module)
+- data.py
+  - Daten verwalten, Datei schreiben/lesen
+- main.py
+  - Spielauswahl
+  - Spiel starten
+  - Ergebnis an Server schicken
+  - Highscores abfragen und anzeigen
+- game_color.py
+  - def run(state):
+       ...
+       return frame;
+    if __name__ == "__main__":
+        root = tk.Tk()
+        ...
+        root.mainloop()
+- game_target.py
+- game_...
+- server.py (HttpServer)
+  - POST /scores (game, name, points)
+  - GET /scores
+- client.py
+- test_server_client.py
