@@ -22,6 +22,7 @@ def get_data():
         print('Gespeicherte Daten:')
         for entry in data:
             print(entry)
+        return data
     else:
         print('Fehler beim Abrufen der Daten:', response.status_code)
 
@@ -31,4 +32,11 @@ if __name__ == '__main__':
     post_data('MegaGame', 'Bob', 95)
 
     # Beispiel: GET-Daten abrufen
-    get_data()
+
+    data=get_data()
+
+    if not data:
+        print('Keine Daten zum Überprüfen.')
+    else:
+        expected = {'name_game': str, 'name_user': str, 'time': (int, float)}
+        [print(f"Eintrag {i} OK" if isinstance(e, dict) and all(k in e and isinstance(e[k], t) for k, t in expected.items()) else f"Eintrag {i} Fehler: {e}") for i, e in enumerate(data)]
